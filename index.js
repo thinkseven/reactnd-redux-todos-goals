@@ -30,7 +30,7 @@ function createStore(reducer) {
   }
 }
 
-// App Code
+// App Code# reducer 1
 function todos(state = [], action) {
   switch (action.type) {
     case 'ADD_TODO':
@@ -49,7 +49,27 @@ function todos(state = [], action) {
   }
 }
 
-const store = createStore(todos)
+// App Code# reducer 2
+function goals(state = [], action) {
+  switch (action.type) {
+    case 'ADD_GOAL':
+      return state.concat([action.goals])
+    case 'REMOVE_GOAL':
+      return state.filter(goal => goal.id !== action.id)
+    default:
+      return state
+  }
+}
+
+// App Code# Combined Reducer
+function app(state = {}, action) {
+  return {
+    todos: todos(state.todos, action),
+    goals: goals(state.goals, action),
+  }
+}
+
+const store = createStore(app)
 
 const unsubcriber1 = store.subscribe(() => {
   console.log('Subcribe1: The new state is: ', store.getState())
@@ -61,6 +81,7 @@ const unsubcriber2 = store.subscribe(() => {
 })
 // unsubcriber2()
 
+// Todos
 store.dispatch({
   type: 'ADD_TODO',
   todos: {
@@ -104,5 +125,52 @@ store.dispatch({
 
 store.dispatch({
   type: 'TOGGLE_TODO',
+  id: 3,
+})
+
+// Goals
+store.dispatch({
+  type: 'ADD_GOAL',
+  goals: {
+    id: 1,
+    name: 'became certified developer',
+    complete: false,
+  },
+})
+
+store.dispatch({
+  type: 'ADD_GOAL',
+  goals: {
+    id: 2,
+    name: 'become rich',
+    complete: false,
+  },
+})
+
+store.dispatch({
+  type: 'ADD_GOAL',
+  goals: {
+    id: 3,
+    name: 'hold valuable wisdome and good parent',
+    complete: false,
+  },
+})
+
+store.dispatch({
+  type: 'ADD_GOAL',
+  goals: {
+    id: 4,
+    name: 'Do not repeat myself',
+    complete: false,
+  },
+})
+
+store.dispatch({
+  type: 'REMOVE_GOAL',
+  id: 2,
+})
+
+store.dispatch({
+  type: 'REMOVE_GOAL',
   id: 3,
 })
