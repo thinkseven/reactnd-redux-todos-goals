@@ -30,6 +30,49 @@ function createStore(reducer) {
   }
 }
 
+// App Code# Action Constants
+const ADD_TODO = 'ADD_TODO'
+const REMOVE_TODO = 'REMOVE_TODO'
+const TOGGLE_TODO = 'TOGGLE_TODO'
+const ADD_GOAL = 'ADD_GOAL'
+const REMOVE_GOAL = 'REMOVE_GOAL'
+
+// App Code# Action Creators
+function addTodoAction(todo) {
+  return {
+    type: ADD_TODO,
+    todo,
+  }
+}
+
+function removeTodoAction(id) {
+  return {
+    type: REMOVE_TODO,
+    id,
+  }
+}
+
+function toggleTodoAction(id) {
+  return {
+    type: TOGGLE_TODO,
+    id,
+  }
+}
+
+function addGoalAction(goal) {
+  return {
+    type: ADD_GOAL,
+    goal,
+  }
+}
+
+function removeGoalAction(id) {
+  return {
+    type: REMOVE_GOAL,
+    id,
+  }
+}
+
 // App Code# reducer 1
 function todos(state = [], action) {
   switch (action.type) {
@@ -82,95 +125,75 @@ const unsubcriber2 = store.subscribe(() => {
 // unsubcriber2()
 
 // Todos
-store.dispatch({
-  type: 'ADD_TODO',
-  todo: {
+store.dispatch(
+  addTodoAction({
     id: 1,
     name: 'finish redux',
     complete: false,
-  },
-})
+  }),
+)
 
-store.dispatch({
-  type: 'ADD_TODO',
-  todo: {
+store.dispatch(
+  addTodoAction({
     id: 2,
     name: 'finish react',
     complete: false,
-  },
-})
+  }),
+)
 
-store.dispatch({
-  type: 'ADD_TODO',
-  todo: {
+store.dispatch(
+  addTodoAction({
     id: 3,
     name: 'have doctor appointment',
     complete: false,
-  },
-})
+  }),
+)
 
-store.dispatch({
-  type: 'ADD_TODO',
-  todo: {
+store.dispatch(
+  addTodoAction({
     id: 4,
     name: 'visit india',
     complete: false,
-  },
-})
+  }),
+)
 
-store.dispatch({
-  type: 'REMOVE_TODO',
-  id: 4,
-})
+store.dispatch(removeTodoAction(1))
 
-store.dispatch({
-  type: 'TOGGLE_TODO',
-  id: 3,
-})
+store.dispatch(toggleTodoAction(3))
 
 // Goals
-store.dispatch({
-  type: 'ADD_GOAL',
-  goal: {
+store.dispatch(
+  addGoalAction({
     id: 1,
     name: 'became certified developer',
     complete: false,
-  },
-})
+  }),
+)
 
-store.dispatch({
-  type: 'ADD_GOAL',
-  goal: {
+store.dispatch(
+  addGoalAction({
     id: 2,
     name: 'become rich',
     complete: false,
-  },
-})
+  }),
+)
 
-store.dispatch({
-  type: 'ADD_GOAL',
-  goal: {
+store.dispatch(
+  addGoalAction({
     id: 3,
     name: 'hold valuable wisdome and good parent',
     complete: false,
-  },
-})
+  }),
+)
 
-store.dispatch({
-  type: 'ADD_GOAL',
-  goal: {
+store.dispatch(
+  addGoalAction({
     id: 4,
     name: 'Do not repeat myself',
     complete: false,
-  },
-})
+  }),
+)
 
-store.dispatch({
-  type: 'REMOVE_GOAL',
-  id: 2,
-})
+store.dispatch(removeGoalAction(2))
 
-store.dispatch({
-  type: 'REMOVE_GOAL',
-  id: 3,
-})
+store.dispatch(removeGoalAction(3))
