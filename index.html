@@ -6,6 +6,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.7.2/redux.js"></script>
     <script src='https://unpkg.com/react@16.3.0-alpha.1/umd/react.development.js'></script>
     <script src='https://unpkg.com/react-dom@16.3.0-alpha.1/umd/react-dom.development.js'></script>
+    <script src="https://unpkg.com/react-redux@5.0.6/dist/react-redux.js"></script>
     <script src='https://unpkg.com/babel-standalone@6.15.0/babel.js'></script>
   </head>
 
@@ -333,7 +334,7 @@
       //   .addEventListener('click', addGoal)
 
     </script>
-    <script type='text/babel' title="React Implementation">
+    <script type='text/babel' title="React and React-Redux Bindings Implementation">
       function List (props) {
         return (
           <ul>
@@ -403,7 +404,7 @@
       //   }
       // }
 
-      const ConnectedTodos = connect((state) => ({
+      const ConnectedTodos = ReactRedux.connect((state) => ({
         todos: state.todos
       }))(Todos)
 
@@ -452,7 +453,7 @@
       //   }
       // }
 
-      const ConnectedGoals = connect((state) => ({
+      const ConnectedGoals = ReactRedux.connect((state) => ({
         goals: state.goals
       }))(Goals)
 
@@ -484,7 +485,7 @@
       //   }
       // }
 
-      const ConnectedApp = connect((state) => ({
+      const ConnectedApp = ReactRedux.connect((state) => ({
         /* as App component does not require any state slice*/
       }))(App)
 
@@ -505,59 +506,59 @@
           }
         }
       */
-      function connect(mapStateToProps /*function*/) {
-        return (Component /*component*/) => {
-          // this component must subscribe to the store when store changes
-          // this component need specific slice of state and pass down as props i.e call mapStateToProps
-          // this componet should unsubscribe as well incase component get unmounted
-          class Receiver extends React.Component {
-            componentDidMount() {
-              const { subscribe } = this.props.store
-              this.unsubscribe = subscribe(() => {
-                this.forceUpdate()
-              })
-            }
-            componentWillUnmount() {
-              this.unsubscribe()
-            }
-            render() {
-              const { dispatch, getState } = this.props.store
-              const state = getState()
-              const stateNeeded = mapStateToProps(state)
-              return <Component {...stateNeeded} dispatch={dispatch} />
-            }
-          }
+      // function connect(mapStateToProps /*function*/) {
+      //   return (Component /*component*/) => {
+      //     // this component must subscribe to the store when store changes
+      //     // this component need specific slice of state and pass down as props i.e call mapStateToProps
+      //     // this componet should unsubscribe as well incase component get unmounted
+      //     class Receiver extends React.Component {
+      //       componentDidMount() {
+      //         const { subscribe } = this.props.store
+      //         this.unsubscribe = subscribe(() => {
+      //           this.forceUpdate()
+      //         })
+      //       }
+      //       componentWillUnmount() {
+      //         this.unsubscribe()
+      //       }
+      //       render() {
+      //         const { dispatch, getState } = this.props.store
+      //         const state = getState()
+      //         const stateNeeded = mapStateToProps(state)
+      //         return <Component {...stateNeeded} dispatch={dispatch} />
+      //       }
+      //     }
 
-          // this component must connect to the React Context API to get the store
-          class ConnectedComponent extends React.Component {
-            render() {
-              return (
-                <Context.Consumer>
-                  {(store) => <Receiver store={store} />}
-                </Context.Consumer>
-              )
-            }
-          }
+      //     // this component must connect to the React Context API to get the store
+      //     class ConnectedComponent extends React.Component {
+      //       render() {
+      //         return (
+      //           <Context.Consumer>
+      //             {(store) => <Receiver store={store} />}
+      //           </Context.Consumer>
+      //         )
+      //       }
+      //     }
 
-          return ConnectedComponent
-        }
-      }
+      //     return ConnectedComponent
+      //   }
+      // }
 
       // Connected or Container Component
-      class Provider extends React.Component {
-        render() {
-          return (
-            <Context.Provider value={this.props.store}>
-              {this.props.children}
-            </Context.Provider>
-          )
-        }
-      }
+      // class Provider extends React.Component {
+      //   render() {
+      //     return (
+      //       <Context.Provider value={this.props.store}>
+      //         {this.props.children}
+      //       </Context.Provider>
+      //     )
+      //   }
+      // }
 
       ReactDOM.render(
-        <Provider store={store}>
+        <ReactRedux.Provider store={store}>
           <ConnectedApp />
-        </Provider>,
+        </ReactRedux.Provider>,
         document.getElementById('app')
       )
     </script>
