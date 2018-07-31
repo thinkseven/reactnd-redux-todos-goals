@@ -390,18 +390,22 @@
         }
       }
 
-      class ConnectedTodos extends React.Component {
-        render() {
-          return (
-            <Context.Consumer>
-              {(store) => {
-                const { todos } = store.getState()
-                return <Todos todos={todos} dispatch={store.dispatch} />
-              }}
-            </Context.Consumer>
-          )
-        }
-      }
+      // class ConnectedTodos extends React.Component {
+      //   render() {
+      //     return (
+      //       <Context.Consumer>
+      //         {(store) => {
+      //           const { todos } = store.getState()
+      //           return <Todos todos={todos} dispatch={store.dispatch} />
+      //         }}
+      //       </Context.Consumer>
+      //     )
+      //   }
+      // }
+
+      const ConnectedTodos = connect((state) => ({
+        todos: state.todos
+      }))(Todos)
 
       class Goals extends React.Component {
         addItem = (e) => {
@@ -435,27 +439,31 @@
         }
       }
 
-      class ConnectedGoals extends React.Component {
-        render() {
-          return (
-            <Context.Consumer>
-              {(store) => {
-                const { goals } = store.getState()
-                return <Goals goals={goals} dispatch={store.dispatch} />
-              }}
-            </Context.Consumer>
-          )
-        }
-      }
+      // class ConnectedGoals extends React.Component {
+      //   render() {
+      //     return (
+      //       <Context.Consumer>
+      //         {(store) => {
+      //           const { goals } = store.getState()
+      //           return <Goals goals={goals} dispatch={store.dispatch} />
+      //         }}
+      //       </Context.Consumer>
+      //     )
+      //   }
+      // }
+
+      const ConnectedGoals = connect((state) => ({
+        goals: state.goals
+      }))(Goals)
 
       class App extends React.Component {
-        componentDidMount () {
-          const { store } = this.props
-          store.subscribe(() => this.forceUpdate())
-        }
+        // componentDidMount () {
+        //   const { store } = this.props
+        //   store.subscribe(() => this.forceUpdate())
+        // }
         render() {
-          const { store } = this.props
-          const { todos, goals } = store.getState()
+          //const { store } = this.props
+          //const { todos, goals } = store.getState()
           return (
             <div>
               <ConnectedTodos />
@@ -466,17 +474,74 @@
       }
 
       // Connected or Container Component
-      class ConnectApp extends React.Component {
-        render() {
-          return (
-            <Context.Consumer>
-              {(store) => (<App store={store}/>)}
-            </Context.Consumer>
-          )
-        }
-      }
+      // class ConnectApp extends React.Component {
+      //   render() {
+      //     return (
+      //       <Context.Consumer>
+      //         {(store) => (<App store={store}/>)}
+      //       </Context.Consumer>
+      //     )
+      //   }
+      // }
+
+      const ConnectedApp = connect((state) => ({
+        /* as App component does not require any state slice*/
+      }))(App)
 
       const Context = React.createContext()
+
+      /*
+        Created this connect utility function to abstract Connected or Container Component creation
+        for App, Todos and Goals and pass the required state. Also these are really become presentation components
+        This is the high-order-function which returns a function and that function further returns a connected component
+        function connect(//mapStateToProps) {
+          return function(//Component) {
+
+            // define Receiver Component
+
+            // define Connected Component
+
+            return ConnectedComponent
+          }
+        }
+      */
+      function connect(mapStateToProps /*function*/) {
+        return (Component /*component*/) => {
+          // this component must subscribe to the store when store changes
+          // this component need specific slice of state and pass down as props i.e call mapStateToProps
+          // this componet should unsubscribe as well incase component get unmounted
+          class Receiver extends React.Component {
+            componentDidMount() {
+              const { subscribe } = this.props.store
+              this.unsubscribe = subscribe(() => {
+                this.forceUpdate()
+              })
+            }
+            componentWillUnmount() {
+              this.unsubscribe()
+            }
+            render() {
+              const { dispatch, getState } = this.props.store
+              const state = getState()
+              const stateNeeded = mapStateToProps(state)
+              return <Component {...stateNeeded} dispatch={dispatch} />
+            }
+          }
+
+          // this component must connect to the React Context API to get the store
+          class ConnectedComponent extends React.Component {
+            render() {
+              return (
+                <Context.Consumer>
+                  {(store) => <Receiver store={store} />}
+                </Context.Consumer>
+              )
+            }
+          }
+
+          return ConnectedComponent
+        }
+      }
 
       // Connected or Container Component
       class Provider extends React.Component {
@@ -491,7 +556,7 @@
 
       ReactDOM.render(
         <Provider store={store}>
-          <ConnectApp />
+          <ConnectedApp />
         </Provider>,
         document.getElementById('app')
       )

@@ -20,9 +20,9 @@ If you feel like there's a major problem, please open an issue to discuss the pr
 ## Terms & Keywords
 
 1.  Connected or Container Component
-    A connected component is connected to the Redux store and is responsible for getting data from the store.
+    A connected component is connected to the Redux store and is responsible for getting data from the store.  
     https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0
 
 2.  Presentational Component
-    A presentational component should not access the store. It should receive any information it needs as props and then just render a UI.
+    A presentational component should not access the store. It should receive any information it needs as props and then just render a UI.  
     https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0
